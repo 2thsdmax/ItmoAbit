@@ -13,7 +13,7 @@ import (
 )
 
 // https://abit.itmo.ru/rating/master/budget/7431
-const URL = "https://abitlk.itmo.ru/api/v1/rating/master/budget?program_id=%s" // &manager_key=&sort=&showLosers=true
+const URL = "https://abitlk.itmo.ru/api/v1/rating/master/budget?program_id=%d" // &manager_key=&sort=&showLosers=true
 
 type ApiResponse struct {
 	OK      bool   `json:"ok"`
@@ -45,17 +45,19 @@ func main() {
 		flag.PrintDefaults()
 	}
 
+	program := *flag.Int("p", 7431, "ID программы")
+
+	// fmt.Println(*program)
+	// if program == "" {
+	// 	fmt.Println("ID программы не указано")
+	// 	os.Exit(1)
+	// }
+
 	flag.Parse()
 
 	snils := flag.Arg(0)
 	if snils == "" {
 		fmt.Println("Снилс не указан")
-		os.Exit(1)
-	}
-
-	program := flag.Arg(1)
-	if snils == "" {
-		fmt.Println("ID программы не указано")
 		os.Exit(1)
 	}
 
