@@ -24,15 +24,18 @@ type ApiResponse struct {
 			Quota  int    `json:"budget_min"`
 			Target int    `json:"target_reception"`
 		} `json:"direction"`
-		Applicants []struct {
-			DiplomaAverage float64 `json:"diploma_average"`
-			Score          float64 `json:"total_scores"`
-			Priority       int     `json:"priority"`
-			Originals      bool    `json:"is_send_original"`
-			Snils          string  `json:"snils"`
-		} `json:"general_competition"`
-		Timestamp time.Time `json:"update_time"`
+		Applicants []Applicant `json:"general_competition"`
+		Timestamp  time.Time   `json:"update_time"`
 	} `json:"result"`
+}
+
+type Applicant struct {
+	DiplomaAverage float64 `json:"diploma_average"`
+	Score          float64 `json:"total_scores"`
+	Priority       int     `json:"priority"`
+	Originals      bool    `json:"is_send_original"`
+	Snils          string  `json:"snils"`
+	Status         string  `json:"status"`
 }
 
 func main() {
@@ -90,9 +93,11 @@ func main() {
 	// Индекс текущего поступающего
 	// Current applicant index
 	var cai int
+	// var currentApplicant Applicant
 	for i, a := range applicants {
 		if a.Snils == snils {
 			cai = i
+			// currentApplicant = a
 		}
 	}
 
@@ -159,6 +164,27 @@ func main() {
 	fmt.Printf("Место с учетом не сдавших ВИ (считаем их 100): %v\n", cai+1+p20)
 	fmt.Printf("Место с учетом не сдавших ВИ c приоритетом 1: %v\n", cai+1+p21)
 	fmt.Printf("Место с учетом не сдавших ВИ c приоритетом 1 и оригиналами: %v\n", cai+1+p22)
+
+	var p30 int
+	var p31 int
+	for i, a := range applicants {
+		if i == cai {
+			p30++
+			p31++
+			break
+		}
+
+		if a.Status == "recommended" {
+			p30++
+			if a.Originals {
+				p31++
+			}
+		}
+	}
+
+	fmt.Println("-------------------------------------------------")
+	fmt.Printf("Место в списке рекомендованных к зачислению: %v\n", p30)
+	fmt.Printf("Место в списке рекомендованных к зачислению (только оригиналы): %v\n", p31)
 
 }
 
